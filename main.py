@@ -67,12 +67,36 @@ def cleanup_and_exit():
 
 try:
     while True:
-        cmd = input("\n[Press Enter to check rules / type 'clear' to discard seen IPs] ").strip().lower()
+        cmd = input("\n[Press Enter to check rules. Commands: 'clear', 'list', 'exit', 'status'] ").strip().lower()
 
         if cmd == "clear":
             with pending_lock:
                 pending_ips.clear()
             print("Pending IP queue cleared.")
+            continue
+
+        if cmd == "list":
+            print("\nPending IPs:")
+            for ip in pending_ips:
+                print(ip)
+            print("\nAllowed IPs:")
+            for ip in allowed_ips:
+                print(ip)
+            print("\nBad IPs:")
+            for ip in bad_ips:
+                print(ip)
+            print("\nPorts")
+            for port in ports:
+                print(port)
+            continue
+
+        if cmd == "exit":
+            cleanup_and_exit()
+
+        if cmd == "status":
+            print("\nCurrent status:")
+            current_status = subprocess.check_output(["sudo", "ufw", "status"], text=True)
+            print(current_status)
             continue
 
         while True:
